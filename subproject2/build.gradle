@@ -1,0 +1,3 @@
+apply plugin: 'java'
+
+println "in subproject2 - root project name is ${rootProject.name}"

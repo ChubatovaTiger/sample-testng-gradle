@@ -1,0 +1,7 @@
+apply plugin: 'java'
+
+println "in subproject1 - root project name is ${rootProject.name}"
+
+task task1 {
+    println "task1 config"
+}

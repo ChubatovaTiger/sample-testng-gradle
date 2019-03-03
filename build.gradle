@@ -1,0 +1,93 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+buildscript {
+    println "Inside BS"
+}
+
+// Add repositories which can be used to download the dependencies
+repositories {
+    mavenCentral()
+}
+
+// List of dependent artifacts required for this project
+dependencies {
+    testCompile 'org.testng:testng:6.+'
+    testCompile 'org.codehaus.groovy:groovy:2.4.+'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'sourcecode/main'
+        }
+    }
+    test {
+        java {
+            srcDirs 'sourcecode/test'
+        }
+        groovy {
+            srcDirs 'sourcecode/test'
+        }
+    }
+}
+
+
+
+tasks.whenTaskAdded{ t -> 
+    println "==> Task ${t} is added"
+}
+
+test {
+    // Use testNG
+    useTestNG() {
+        // Using SuiteXmlBuilder is not requied. 
+        suiteXmlBuilder().suite(name:"mytest suite" )  {
+            test(name:"test name") {
+                classes('') {
+                    'class'(name:"com.semuruga.learning.SampleGroovyTestNG")
+                }
+            }
+        }
+    }
+}
+
+
+task count {
+    doLast {
+        5.times {
+            println "$it time"
+        }
+    }
+}
+
+task zipFiles(type: Zip) {
+    from projectDir
+    include "src/**/*"
+    into "/tmp/11"
+    baseName "zipSrc"
+}
+
+task srcZip(type: Zip) {
+    from projectDir
+    include 'src/**/*'
+    doLast {
+        println "Path to zip: $archivePath.path"
+    }
+}
+
+
+defaultTasks 'count'
+
+allprojects { 
+    afterEvaluate { project ->
+        println "Projects (${project.name}) are evaluated"
+    }
+    beforeEvaluate { project ->
+    println " --- before Evaluate ${project.name}----"
+}
+}
+
+
+gradle.afterProject { project ->
+    println "After   ${project.name} - state : ${project.state}"
+}
