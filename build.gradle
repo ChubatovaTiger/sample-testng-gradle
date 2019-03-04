@@ -6,7 +6,26 @@ apply plugin: 'maven-publish'
 buildscript {
     println "Build script block is executed immediately after the settings.gradle (if present)"
     println "Inside buildscript"
+/*
+    repositories {
+        mavenLocal()
+    }
+    dependencies {
+        classpath "com.semuruga.gradleplugin:sample-semuruga-plugin:1.0+"
+    }
+*/
 }
+
+/*
+apply plugin:'com.semuruga.gradleplugin.sample-semuruga-plugin'
+
+happy { 
+    message  "Welcome to happy project ${project.name} !"
+}
+
+println happy.message
+
+*/
 
 // Add repositories which can be used to download the dependencies
 repositories {
@@ -194,6 +213,7 @@ publishing.publications {
 
 
 // Extending Task 
+/*
 class SemurugaTask extends DefaultTask {
     String message = "This is the default message of SemurugaTask"
 
@@ -206,6 +226,7 @@ class SemurugaTask extends DefaultTask {
         }
     }
 }
+*/
 
 task myCustomTask(type: SemurugaTask) {
     message = "myCustomTask message"
