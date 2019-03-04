@@ -1,7 +1,52 @@
+
 apply plugin: 'java'
+apply plugin: 'maven-publish'
 
 println "in subproject1 - root project name is ${rootProject.name}"
 
-task task1 {
-    println "task1 config"
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile  'org.testng:testng:6.+'
+}
+
+// Extending Task
+class SemurugaTask1 extends DefaultTask {
+    String message = "This is the default message of SemurugaTask"
+
+    @TaskAction
+    def welcome() {
+        println message
+        10.times {
+          println "${project.name} - ${this.name} time: $it"
+          sleep 1000
+        }
+    }
+}
+
+
+task mysubCustomTask(type: SemurugaTask1) {
+    message = "myCustomTask message"
+}
+
+group = "com.semuruga.learning.subproject1"
+version = 1.0
+
+// task testJar(type: Jar) {
+//     from sourceSets.test.output
+// }
+
+publishing {
+    publications {
+        subproject1Artifacts(MavenPublication) {
+            from components.java
+            artifactId "${project.name}-main"
+        }
+        // subproject1TestArtifacts(MavenPublication) {
+        //     artifact testJar
+        //     artifactId "${project.name}-test"
+        // }
+    }
 }
