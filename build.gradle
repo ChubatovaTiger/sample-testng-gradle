@@ -1,7 +1,11 @@
+// Top level project build.gradle file
 apply plugin: 'java'
 apply plugin: 'groovy'
+apply plugin: 'maven-publish'
+
 buildscript {
-    println "Inside BS"
+    println "Build script block is executed immediately after the settings.gradle (if present)"
+    println "Inside buildscript"
 }
 
 // Add repositories which can be used to download the dependencies
@@ -11,10 +15,16 @@ repositories {
 
 // List of dependent artifacts required for this project
 dependencies {
+    // Test source code is compiled with the testCompile dependencies
     testCompile 'org.testng:testng:6.+'
     testCompile 'org.codehaus.groovy:groovy:2.4.+'
 }
 
+// GAV for artifact publication 
+group = "com.semuruga.learning"
+version = "1.0"
+
+// Override the src folder for source to a custom folder
 sourceSets {
     main {
         java {
@@ -31,16 +41,19 @@ sourceSets {
     }
 }
 
-
-
+/*
 tasks.whenTaskAdded{ t -> 
     println "==> Task ${t} is added"
 }
+*/
 
+// Unit test cases are executed with "test"
+// Supports JUnit and TestNG
 test {
     // Use testNG
     useTestNG() {
-        // Using SuiteXmlBuilder is not requied. 
+        // Using SuiteXmlBuilder is not requied and by default all the tests are picked
+        // Below is just to override the default behaviour 
         suiteXmlBuilder().suite(name:"mytest suite" )  {
             test(name:"test name") {
                 classes('') {
@@ -51,7 +64,7 @@ test {
     }
 }
 
-
+/*
 task count {
     doLast {
         5.times {
@@ -59,35 +72,149 @@ task count {
         }
     }
 }
+*/
 
+/* Zip the source directory */
 task zipFiles(type: Zip) {
     from projectDir
-    include "src/**/*"
-    into "/tmp/11"
-    baseName "zipSrc"
+    include "sourcecode/**/*"
+    into "${project.name}"
+    baseName "${project.name}-sourcecode"
 }
 
-task srcZip(type: Zip) {
-    from projectDir
-    include 'src/**/*'
-    doLast {
-        println "Path to zip: $archivePath.path"
-    }
-}
-
-
-defaultTasks 'count'
-
+/*
 allprojects { 
     afterEvaluate { project ->
         println "Projects (${project.name}) are evaluated"
     }
     beforeEvaluate { project ->
-    println " --- before Evaluate ${project.name}----"
-}
+        println " --- before Evaluate ${project.name}----"
+    }
 }
 
 
 gradle.afterProject { project ->
     println "After   ${project.name} - state : ${project.state}"
 }
+*/
+
+defaultTasks "clean", "build"
+
+// task sourceJar(type: Jar) {
+//     from sourceSets.main.allJava
+// }
+
+// artifacts {
+//     archives(zipFiles) {
+//         name "sourceArtifacts"
+//         type "zip"
+//         builtBy zipFiles
+//     }
+// }
+
+// Get the Git current branch name from the project directory
+def getGitBranchName() {
+    def gitBranchName = ""
+    def p = "pwd".execute()
+    p.in.eachLine { println it}
+    p.waitFor()
+
+    def process = "git --git-dir=${project.getProjectDir().toString()}/.git rev-parse --abbrev-ref HEAD".execute()
+    process.in.eachLine{ line ->
+        gitBranchName = line
+    }
+    process.err.eachLine { line ->
+        println "${line}"
+    }
+    process.waitFor()
+    return gitBranchName
+}
+
+// Get the local mavel directory path
+def getMavelLocalPath() {
+    def branchDir  = (getGitBranchName())?:"default"
+    def mavenLocalDir = "${project.getProjectDir().toString()}/maven-local/${branchDir}"
+    mkdir "${mavenLocalDir.toString()}"
+    println mavenLocalDir
+    return mavenLocalDir
+}
+
+// task sourceJar(type: Jar) {
+//     from sourceSets.main.allJava
+// }
+
+task testJar(type:Jar) {
+    from sourceSets.test.output
+}
+
+// gradle build publishToMavenLocal
+// mavenLocal points to ~/.m2 directory by default
+publishing.publications {
+    mavenJava(MavenPublication) {
+        
+        // components.java for jar files, components.web for war files
+        from components.java
+
+        // Customize the POM xml with additional details
+        pom.withXml{
+            asNode().appendNode('description','Sample TestNG Gradle source code')
+        }
+    }
+    testJars(MavenPublication) {
+        artifactId "sample-testng-gradle-test"
+        artifact testJar
+        pom.withXml {
+            def dependenciesNode = asNode().appendNode('dependencies')
+            configurations.testCompile.allDependencies.findAll { Dependency d ->
+                d.name != 'unspecified'
+            }.each { Dependency d ->
+                def dependencyNode = dependenciesNode.appendNode('dependency')
+                dependencyNode.appendNode('groupId', d.group)
+                dependencyNode.appendNode('artifactId', d.name)
+                dependencyNode.appendNode('version', d.version)
+            }
+        }
+    }
+}
+
+// publishing.repositories {
+//     maven {
+//         url uri(getMavelLocalPath())
+//     }   
+// }
+
+// // Print the task list when ready
+// gradle.taskGraph.whenReady {
+//     allprojects { p ->
+//         p.tasks.each { t ->
+//             println "P:${p.name} - t:${t.name}"
+//         }
+//     }
+// }
+
+
+// Extending Task 
+class SemurugaTask extends DefaultTask {
+    String message = "This is the default message of SemurugaTask"
+
+    @TaskAction
+    def welcome() {
+        println message
+        10.times {
+          println "${project.name} - ${this.name} time: $it"
+          sleep 1000
+        }
+    }
+}
+
+task myCustomTask(type: SemurugaTask) {
+    message = "myCustomTask message"
+}
+
+task studentTask() {
+    doLast {
+        println "Hi, I am a student !"
+    }
+}
+studentTask.shouldRunAfter myCustomTask
+
