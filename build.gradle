@@ -35,8 +35,8 @@ repositories {
 // List of dependent artifacts required for this project
 dependencies {
     // Test source code is compiled with the testCompile dependencies
-    testImplemetation 'org.testng:testng:6.+'
-    testImplemetation 'org.codehaus.groovy:groovy:2.4.+'
+    testImplementation 'org.testng:testng:6.+'
+    testImplementation 'org.codehaus.groovy:groovy:2.4.+'
 }
 
 // GAV for artifact publication 
