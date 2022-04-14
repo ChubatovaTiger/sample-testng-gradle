@@ -78,6 +78,14 @@ test {
                 classes('') {
                     'class'(name:"com.semuruga.learning.SampleGroovyTestNG")
                     'class'(name:"com.semuruga.learning.SampleTestNG")
+                    'class'(name:"com.semuruga.learning.one")
+                    'class'(name:"com.semuruga.learning.two")
+                    'class'(name:"com.semuruga.learning.three")
+                    'class'(name:"com.semuruga.learning.four")
+                    'class'(name:"com.semuruga.learning.five")
+                    'class'(name:"com.semuruga.learning.six")
+                    'class'(name:"com.semuruga.learning.seven")
+                    'class'(name:"com.semuruga.learning.eight")
                 }
             }
         }
