@@ -89,6 +89,7 @@ test {
                 }
             }
         }*/
+        useDefaultListeners = true
         suites 'suite.xml'
     }
 }
