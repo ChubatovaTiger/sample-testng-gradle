@@ -1,4 +1,4 @@
-package com.semuruga.learning
+package com.chubatova.learning
 
 import org.testng.annotations.*
 
