@@ -2,7 +2,7 @@ package com.semuruga.learning;
 
 import org.testng.annotations.*;
 
-public class SampleTestNG {
+public class seven {
 
     @BeforeClass
     void setupClass() {
