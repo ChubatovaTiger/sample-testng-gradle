@@ -1,6 +1,7 @@
 package com.semuruga.learning;
 
 import org.testng.annotations.*;
+import java.lang.*;
 
 public class five {
 
@@ -15,8 +16,16 @@ public class five {
     }
 
     @Test
-    void fiveTest() {
-        System.out.print("myFirstTest");
+    void fiveTest(){
+        try
+    {
+        Thread.sleep(5000);
     }
+        catch(InterruptedException e)
+    {
+        // this part is executed when an exception (in this example InterruptedException) occurs
+    }
+        System.out.print("myFirstTest");
+}
 
 }
