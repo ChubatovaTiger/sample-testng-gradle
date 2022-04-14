@@ -25,7 +25,7 @@ public class two {
         {
             // this part is executed when an exception (in this example InterruptedException) occurs
         }
-        System.out.print("myFirstTest");
+        System.out.print("myFirsmtTest");
     }
 
 }

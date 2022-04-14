@@ -73,7 +73,7 @@ test {
     useTestNG() {
         // Using SuiteXmlBuilder is not requied and by default all the tests are picked
         // Below is just to override the default behaviour 
-        suiteXmlBuilder().suite(name:"mytest suite" )  {
+        /*suiteXmlBuilder().suite(name:"mytest suite" )  {
             test(name:"test name") {
                 classes('') {
                     'class'(name:"com.semuruga.learning.SampleGroovyTestNG")
@@ -88,7 +88,8 @@ test {
                     'class'(name:"com.semuruga.learning.eight")
                 }
             }
-        }
+        }*/
+        suites 'suite.xml'
     }
 }
 
