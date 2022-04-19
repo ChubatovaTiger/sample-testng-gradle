@@ -91,6 +91,7 @@ test {
         }*/
         useDefaultListeners = true
         suites 'suite.xml'
+        excludeGroups 'com.chubatova.learning.three', "com.chubatova.learning.five", "com.chubatova.learning.eight", "com.chubatova.learning.SampleTestNG", "com.chubatova.learning.SampleGroovyTestNG"
     }
 }
 
