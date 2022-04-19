@@ -3,6 +3,8 @@ package com.chubatova.learning;
 import org.testng.annotations.*;
 import java.lang.*;
 
+import static java.com.semuruga.learning.Config.TIMEOUT;
+
 public class three {
 
     @BeforeClass
@@ -19,7 +21,7 @@ public class three {
     void threeTest(){
         try
         {
-            Thread.sleep(5000);
+            Thread.sleep(TIMEOUT);
         }
         catch(InterruptedException e)
         {
